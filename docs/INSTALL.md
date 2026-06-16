@@ -41,6 +41,17 @@ Sanity check from another terminal: `curl http://127.0.0.1:3030/health`.
 
 ## 2. Panel (inside Premiere)
 
+### Fast path — one command
+
+These scripts enable unsigned extensions **and** install the panel for you, then
+just restart Premiere:
+
+- **macOS:** `./scripts/install-panel.sh`  (add `--copy` to copy instead of symlink)
+- **Windows:** `powershell -ExecutionPolicy Bypass -File scripts\install-panel.ps1`
+
+Then restart Premiere and open **Window → Extensions → Claude for Premiere**.
+Prefer the manual steps below if you want to understand/verify each part.
+
 ### 2a. Enable unsigned extensions (one time)
 
 The panel is unsigned during development, so allow unsigned CEP extensions.

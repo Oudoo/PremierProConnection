@@ -15,7 +15,8 @@
     "start": "node dist/index.js",
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "tools": "tsx src/print-tools.ts"
+    "tools": "tsx src/print-tools.ts",
+    "smoke": "tsx src/smoke-mcp.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.104.2",
