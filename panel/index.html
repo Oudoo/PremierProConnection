@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Claude for Premiere</title>
+    <link rel="stylesheet" href="./client/style.css" />
+  </head>
+  <body>
+    <header class="bar">
+      <span class="title">Claude · Premiere</span>
+      <span id="status" class="status status--off" title="Bridge connection">offline</span>
+    </header>
+
+    <main id="log" class="log" aria-live="polite">
+      <div class="msg msg--assistant">
+        <div class="bubble">
+          Hi — I'm your editing assistant inside Premiere. Tell me what to do
+          (e.g. <em>"cut the silence at the start of V1"</em>,
+          <em>"fix the blown highlights on the third clip"</em>,
+          <em>"add a lower-third that says Welcome"</em>).
+          <br /><br />
+          Make sure the <strong>bridge</strong> is running
+          (<code>cd bridge &amp;&amp; npm run dev</code>).
+        </div>
+      </div>
+    </main>
+
+    <footer class="composer">
+      <label class="vision" title="Let Claude export &amp; look at frames (uses more tokens)">
+        <input type="checkbox" id="vision" />
+        <span>👁 see frames</span>
+      </label>
+      <div class="inputrow">
+        <textarea
+          id="input"
+          rows="1"
+          placeholder="Ask Claude to edit… (Enter to send, Shift+Enter for newline)"
+        ></textarea>
+        <button id="send" disabled>Send</button>
+      </div>
+    </footer>
+
+    <!-- Adobe CEP interface + app logic -->
+    <script src="./client/CSInterface.js"></script>
+    <script src="./client/main.js"></script>
+  </body>
+</html>
