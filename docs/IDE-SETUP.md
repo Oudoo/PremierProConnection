@@ -58,19 +58,9 @@ exposure on the second clip."*
 ```
 
 ### Antigravity (Gemini — uses your Google subscription)
-In Antigravity, open the MCP / tools settings (look for **MCP Servers** or
-**Tools → MCP**) and add a server. Antigravity reads a JSON config like:
-
-```json
-{
-  "mcpServers": {
-    "premiere": { "url": "http://127.0.0.1:3030/mcp" }
-  }
-}
-```
-
-If your build only accepts a **command** (stdio) server rather than a URL, use
-the `mcp-remote` bridge instead:
+Config file: **`~/.gemini/config/mcp_config.json`**. The most reliable form
+(works regardless of which MCP transport the build expects) is the `mcp-remote`
+stdio bridge:
 
 ```json
 {
@@ -83,8 +73,11 @@ the `mcp-remote` bridge instead:
 }
 ```
 
-Then ask Gemini in Antigravity: *"Use the premiere tools to read my timeline."*
-No API key is involved — it runs on your Google/Gemini subscription.
+If your build prefers a direct URL, some versions accept `"httpUrl":
+"http://127.0.0.1:3030/mcp"` (Streamable HTTP) or `"url": …` (SSE) instead — but
+the `mcp-remote` command above avoids guessing. Restart Antigravity after
+saving. Then ask Gemini: *"Use the premiere tools to read my timeline."* No API
+key — it runs on your Google/Gemini subscription.
 
 ---
 
