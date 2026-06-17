@@ -37,6 +37,8 @@ export const config = {
   scratchDir,
   maxVisionImages: int(process.env.MAX_VISION_IMAGES, 2),
   confirmDestructive: bool(process.env.CONFIRM_DESTRUCTIVE, true),
+  /** Optional: how Claude should address you (e.g. "Oudo"). */
+  userName: process.env.USER_NAME?.trim() || "",
 };
 
 export function hasApiKey(): boolean {

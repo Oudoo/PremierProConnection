@@ -47,7 +47,16 @@ export class WsHub extends EventEmitter {
     this.wss.on("listening", () =>
       console.log(`[ws]  panel hub listening on ws://${config.host}:${config.wsPort}`),
     );
-    this.wss.on("error", (err) => console.error("[ws]  server error:", err));
+    this.wss.on("error", (err: NodeJS.ErrnoException) => {
+      if (err.code === "EADDRINUSE") {
+        console.error(
+          `\n[fatal] Port ${config.wsPort} is already in use — another bridge is probably ` +
+            `running.\n        Stop it first:  lsof -ti tcp:${config.wsPort} | xargs kill -9\n`,
+        );
+        process.exit(1);
+      }
+      console.error("[ws]  server error:", err);
+    });
   }
 
   private handleConnection(ws: WebSocket) {
@@ -81,7 +90,7 @@ export class WsHub extends EventEmitter {
   private onPanelMessage(msg: PanelToBridge, ws: WebSocket) {
     switch (msg.type) {
       case "hello": {
-        this.send({ type: "ready", tools: COMMANDS.map((c) => c.name) });
+        this.send({ type: "ready", tools: COMMANDS.map((c) => c.name), userName: config.userName });
         this.emit("panel-connected", msg.app);
         console.log(
           `[ws]  panel hello${msg.app?.version ? ` — Premiere ${msg.app.version}` : ""}`,

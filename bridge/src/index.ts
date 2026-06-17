@@ -63,8 +63,18 @@ function main() {
     });
   });
 
-  app.listen(config.httpPort, config.host, () => {
+  const server = app.listen(config.httpPort, config.host, () => {
     banner();
+  });
+  server.on("error", (err: NodeJS.ErrnoException) => {
+    if (err.code === "EADDRINUSE") {
+      console.error(
+        `\n[fatal] Port ${config.httpPort} is already in use — another bridge is probably ` +
+          `running.\n        Stop it first:  lsof -ti tcp:${config.httpPort} | xargs kill -9\n`,
+      );
+      process.exit(1);
+    }
+    throw err;
   });
 }
 

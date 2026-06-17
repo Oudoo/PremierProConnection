@@ -46,7 +46,7 @@ export type PanelToBridge =
 
 // Bridge → panel messages.
 export type BridgeToPanel =
-  | { type: "ready"; tools: string[] }
+  | { type: "ready"; tools: string[]; userName?: string }
   | PanelCommandRequest
   | { type: "chatToken"; requestId: string; text: string }
   | {

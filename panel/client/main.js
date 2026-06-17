@@ -142,6 +142,10 @@
   function handleBridgeMessage(msg) {
     switch (msg.type) {
       case "ready":
+        if (msg.userName) {
+          var greet = document.getElementById("greet-hello");
+          if (greet) greet.textContent = "Hi " + msg.userName;
+        }
         break;
 
       case "command":
