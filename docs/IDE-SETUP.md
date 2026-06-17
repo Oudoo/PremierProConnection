@@ -6,10 +6,21 @@ Code, VS Code, Cursor, Antigravity** — using that tool's own Claude
 subscription instead of per-token API billing (see [COST.md](COST.md)).
 
 **Prerequisites for all of these:**
-1. The **bridge is running** (`cd bridge && npm run dev`).
+1. The **bridge is running**. One command (kills any old copy, runs in the
+   background, survives closing the terminal):
+   ```bash
+   bash scripts/bridge.sh          # start/restart
+   bash scripts/bridge.sh stop     # stop
+   bash scripts/bridge.sh logs     # follow the log
+   ```
 2. **Premiere + the panel are open and connected** (the panel relays commands
    into Premiere). The MCP tools fail with a clear message if the panel isn't
    connected.
+
+> **No Anthropic API key needed for this route.** When you drive Premiere from
+> Claude Desktop / Antigravity / an IDE, *that tool's* subscription provides the
+> model. The bridge just relays tool calls — leave `ANTHROPIC_API_KEY` blank.
+> (The API key is only for the optional in-panel chat.)
 
 The MCP endpoint is:
 
@@ -46,10 +57,34 @@ exposure on the second clip."*
 }
 ```
 
-### Antigravity / other agentic IDEs
-Add an MCP server of type **HTTP / streamable-http** pointing at
-`http://127.0.0.1:3030/mcp`. (If it only accepts a command/stdio server, use the
-stdio bridge below.)
+### Antigravity (Gemini — uses your Google subscription)
+In Antigravity, open the MCP / tools settings (look for **MCP Servers** or
+**Tools → MCP**) and add a server. Antigravity reads a JSON config like:
+
+```json
+{
+  "mcpServers": {
+    "premiere": { "url": "http://127.0.0.1:3030/mcp" }
+  }
+}
+```
+
+If your build only accepts a **command** (stdio) server rather than a URL, use
+the `mcp-remote` bridge instead:
+
+```json
+{
+  "mcpServers": {
+    "premiere": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "http://127.0.0.1:3030/mcp"]
+    }
+  }
+}
+```
+
+Then ask Gemini in Antigravity: *"Use the premiere tools to read my timeline."*
+No API key is involved — it runs on your Google/Gemini subscription.
 
 ---
 
