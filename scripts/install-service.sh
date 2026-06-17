@@ -70,12 +70,17 @@ cat > "$PLIST" <<PLISTEOF
 </plist>
 PLISTEOF
 
-echo "→ stopping any manually-started bridge so the ports are free…"
+echo "→ stopping any old bridge / crash-looping service so the ports are free…"
+unload                                   # stop an old/looping agent first (no respawn)
 pkill -f "src/index.ts" 2>/dev/null || true
-
-echo "→ (re)loading the service…"
-unload
+pkill -f "dist/index.js" 2>/dev/null || true
+for p in 3030 3031; do                   # the reliable part: kill whatever holds the port
+  pids="$(lsof -ti tcp:"$p" 2>/dev/null || true)"
+  [ -n "$pids" ] && kill -9 $pids 2>/dev/null || true
+done
 sleep 1
+
+echo "→ loading the service…"
 launchctl bootstrap "gui/$UID_NUM" "$PLIST" 2>/dev/null || launchctl load -w "$PLIST"
 
 up=""
