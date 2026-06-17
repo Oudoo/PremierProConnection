@@ -6,16 +6,24 @@ Code, VS Code, Cursor, Antigravity** — using that tool's own Claude
 subscription instead of per-token API billing (see [COST.md](COST.md)).
 
 **Prerequisites for all of these:**
-1. The **bridge is running**. One command (kills any old copy, runs in the
-   background, survives closing the terminal):
+1. The **bridge is running**. Best: install it as an always-on background
+   service (starts on login, auto-restarts, survives reboots — nothing to
+   babysit):
+   ```bash
+   bash scripts/install-service.sh            # install/update + start
+   bash scripts/install-service.sh uninstall  # remove
+   ```
+   Or, for a one-off foreground run during development:
    ```bash
    bash scripts/bridge.sh          # start/restart
    bash scripts/bridge.sh stop     # stop
-   bash scripts/bridge.sh logs     # follow the log
    ```
 2. **Premiere + the panel are open and connected** (the panel relays commands
    into Premiere). The MCP tools fail with a clear message if the panel isn't
    connected.
+
+> A `connect ECONNREFUSED 127.0.0.1:3030` in an MCP client just means the bridge
+> isn't running yet — start it (above). The always-on service prevents this.
 
 > **No Anthropic API key needed for this route.** When you drive Premiere from
 > Claude Desktop / Antigravity / an IDE, *that tool's* subscription provides the
