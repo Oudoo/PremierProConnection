@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Enables remote Chrome DevTools debugging of the panel during development.
+  Open http://localhost:8088 in Chrome while the panel is running.
+  (Has no effect in production. Safe to leave in for development.)
+-->
+<ExtensionList>
+  <Extension Id="com.claudeforpremiere.panel">
+    <HostList>
+      <Host Name="PPRO" Port="8088" />
+    </HostList>
+  </Extension>
+</ExtensionList>
