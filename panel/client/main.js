@@ -12,8 +12,11 @@
 (function () {
   "use strict";
 
-  // Must match bridge/.env (WS_PORT). The panel always talks to localhost.
-  var BRIDGE_WS = "ws://127.0.0.1:3031";
+  // The panel auto-discovers the bridge across this small range of localhost
+  // WS ports, so it works no matter which port the bridge ended up on (the
+  // installer bumps the port if 3031 is taken).
+  var WS_PORTS = [3031, 3032, 3033, 3034, 3035, 3036, 3037, 3038, 3039, 3041];
+  var portIdx = 0;
 
   var cs = new CSInterface();
   var ws = null;
@@ -80,15 +83,16 @@
 
   // ── WebSocket lifecycle ──────────────────────────────────────────────────
   function connect() {
+    var url = "ws://127.0.0.1:" + WS_PORTS[portIdx];
     try {
-      ws = new WebSocket(BRIDGE_WS);
+      ws = new WebSocket(url);
     } catch (e) {
-      scheduleReconnect();
+      advanceAndRetry();
       return;
     }
 
     ws.onopen = function () {
-      setStatus(true);
+      setStatus(true); // found the bridge on this port — stop scanning
       var env = cs.getHostEnvironment() || {};
       send({
         type: "hello",
@@ -99,7 +103,7 @@
 
     ws.onclose = function () {
       setStatus(false);
-      scheduleReconnect();
+      advanceAndRetry();
     };
 
     ws.onerror = function () {
@@ -119,12 +123,19 @@
     };
   }
 
+  // Move to the next candidate port and retry. Cheap on localhost; stops the
+  // moment a connection opens.
+  function advanceAndRetry() {
+    portIdx = (portIdx + 1) % WS_PORTS.length;
+    scheduleReconnect();
+  }
+
   function scheduleReconnect() {
     if (reconnectTimer) return;
     reconnectTimer = setTimeout(function () {
       reconnectTimer = null;
       connect();
-    }, 2000);
+    }, 500);
   }
 
   function send(obj) {

@@ -60,6 +60,8 @@ function main() {
       panelConnected: hub.connected,
       panelChat: hasApiKey(),
       tools: COMMANDS.length,
+      httpPort: config.httpPort,
+      wsPort: config.wsPort,
     });
   });
 
