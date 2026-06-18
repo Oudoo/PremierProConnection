@@ -90,7 +90,7 @@ fi
 NODE_DIR="$(dirname "$NODE_BIN")"
 
 # ── 1. stop anything old and free the ports ────────────────────────────────
-echo "→ stopping any old bridge / crash-looping service…"
+echo "→ stopping any old bridge / crash-looping service..."
 unload
 pkill -f "src/index.ts" 2>/dev/null || true
 pkill -f "dist/index.js" 2>/dev/null || true
@@ -102,7 +102,7 @@ for _ in 1 2 3 4 5 6; do
 done
 
 # ── 2. choose free ports (prefers the defaults; bumps only if still taken) ──
-echo "→ choosing free ports…"
+echo "→ choosing free ports..."
 HTTP_PORT="$("$NODE_BIN" "$SCRIPTS/_pick-port.cjs" 3030 3040 3050 3060 3070 || true)"
 WS_PORT="$("$NODE_BIN" "$SCRIPTS/_pick-port.cjs" 3031 3032 3033 3034 3035 3036 3037 3038 3039 3041 || true)"
 if [ -z "$HTTP_PORT" ] || [ -z "$WS_PORT" ]; then
@@ -115,7 +115,7 @@ echo "  HTTP (MCP) port: $HTTP_PORT"
 echo "  WS  (panel) port: $WS_PORT"
 
 # ── 3. build ───────────────────────────────────────────────────────────────
-echo "→ building the bridge…"
+echo "→ building the bridge..."
 cd "$BRIDGE"
 [ -d node_modules ] || npm install
 npm run build
@@ -150,7 +150,7 @@ cat > "$PLIST" <<PLISTEOF
 PLISTEOF
 
 # ── 5. load + verify ───────────────────────────────────────────────────────
-echo "→ loading the service…"
+echo "→ loading the service..."
 : > "$LOG" 2>/dev/null || true
 launchctl bootstrap "gui/$UID_NUM" "$PLIST" 2>/dev/null || launchctl load -w "$PLIST"
 
@@ -170,8 +170,8 @@ if [ -z "$up" ]; then
 fi
 
 # ── 6. point the MCP clients at the chosen port (merge, don't clobber) ──────
-echo "→ updating MCP client configs to port $HTTP_PORT…"
-MCP_URL="http://127.0.0.1:$HTTP_PORT/mcp"
+echo "-> updating MCP client configs to port ${HTTP_PORT} ..."
+MCP_URL="http://127.0.0.1:${HTTP_PORT}/mcp"
 "$NODE_BIN" "$SCRIPTS/_write-mcp.cjs" "$CLAUDE_CFG" "$MCP_URL" 2>/dev/null && echo "  ✓ Claude Desktop" || echo "  • Claude Desktop config not updated (skipped)"
 "$NODE_BIN" "$SCRIPTS/_write-mcp.cjs" "$GEMINI_CFG" "$MCP_URL" 2>/dev/null && echo "  ✓ Antigravity (Gemini)" || echo "  • Antigravity config not updated (skipped)"
 

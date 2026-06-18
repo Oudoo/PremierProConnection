@@ -38,14 +38,14 @@ case "${1:-start}" in
     ;;
 esac
 
-echo "→ stopping any running bridge…"
+echo "→ stopping any running bridge..."
 stop_bridge
 sleep 1
 
 cd "$BRIDGE"
-[ -d node_modules ] || { echo "→ installing dependencies…"; npm install; }
+[ -d node_modules ] || { echo "→ installing dependencies..."; npm install; }
 
-echo "→ starting bridge in the background…"
+echo "→ starting bridge in the background..."
 nohup npx tsx src/index.ts > "$LOG" 2>&1 &
 
 # Poll for readiness (cold tsx start can take several seconds).
